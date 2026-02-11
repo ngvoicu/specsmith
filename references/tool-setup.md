@@ -24,7 +24,12 @@ No additional config needed — Claude Code reads SKILL.md automatically.
 
 ## OpenAI Codex
 
-Codex uses `AGENTS.md` (or `codex.md`) for instructions. Add this block:
+Quick setup:
+```bash
+npx skills add ngvoicu/specsmith-forge -a codex
+```
+
+Or manually — Codex uses `AGENTS.md` (or `codex.md`) for instructions. Add this block:
 
 ```markdown
 ## Spec Management (Spec Smith)
@@ -83,7 +88,12 @@ even though it has no memory of previous sessions.
 
 ## Cursor
 
-Cursor uses `.cursor/rules` (or `.cursorrules`) for project instructions.
+Quick setup:
+```bash
+npx skills add ngvoicu/specsmith-forge -a cursor
+```
+
+Or manually — Cursor uses `.cursor/rules` (or `.cursorrules`) for project instructions.
 Add this block:
 
 ```markdown
@@ -110,22 +120,42 @@ Before finishing:
 
 ## Windsurf
 
-Windsurf uses `.windsurfrules` for project instructions. Add the same
+Quick setup:
+```bash
+npx skills add ngvoicu/specsmith-forge -a windsurf
+```
+
+Or manually — Windsurf uses `.windsurfrules` for project instructions. Add the same
 content as the Cursor section above.
 
 ## Cline
 
-Cline uses `.clinerules` for project instructions. Add the same content
+Quick setup:
+```bash
+npx skills add ngvoicu/specsmith-forge -a cline
+```
+
+Or manually — Cline uses `.clinerules` for project instructions. Add the same content
 as the Cursor section above.
 
 ## Aider
 
-Aider uses `.aider.conf.yml` or reads from conventions files. Create a
+Quick setup:
+```bash
+npx skills add ngvoicu/specsmith-forge -a aider
+```
+
+Or manually — Aider uses `.aider.conf.yml` or reads from conventions files. Create a
 `.aider/conventions.md` with the Cursor snippet above.
 
 ## Gemini CLI
 
-Gemini CLI uses `GEMINI.md` for project instructions. Add the same
+Quick setup:
+```bash
+npx skills add ngvoicu/specsmith-forge -a gemini
+```
+
+Or manually — Gemini CLI uses `GEMINI.md` for project instructions. Add the same
 content as the Cursor section above.
 
 ## Any Other Tool

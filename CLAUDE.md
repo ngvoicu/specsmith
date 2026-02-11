@@ -20,7 +20,8 @@ specsmith-forge/
 │   ├── pause.md             # /pause — save context and stop
 │   ├── switch.md            # /switch — change active spec
 │   ├── list.md              # /list — show all specs
-│   └── status.md            # /status — detailed progress
+│   ├── status.md            # /status — detailed progress
+│   └── openapi.md           # /openapi — generate OpenAPI spec from codebase
 ├── agents/
 │   └── researcher.md        # Deep research subagent (opus model)
 ├── hooks/

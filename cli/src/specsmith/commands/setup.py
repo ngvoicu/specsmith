@@ -80,3 +80,6 @@ def setup(project_root: Path, tool: str, dry_run: bool = False) -> None:
         config_file.write_text(snippet)
 
     console.print(f"[green]Added SpecSmith config to {config_file}[/green]")
+    console.print(
+        f"\n[dim]Tip: You can also use: npx skills add ngvoicu/specsmith-forge -a {tool}[/dim]"
+    )

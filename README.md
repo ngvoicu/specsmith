@@ -113,7 +113,7 @@ Three ways to use Spec Smith, depending on your setup.
 
 ### Path 1: Claude Code Plugin (Full — Recommended)
 
-Everything: all 6 slash commands, researcher agent (Opus-powered deep codebase analysis), session start hooks, SKILL.md auto-triggers.
+Everything: all 7 slash commands (`/forge`, `/resume`, `/pause`, `/switch`, `/list`, `/status`, `/openapi`), researcher agent (Opus-powered deep codebase analysis), session start hooks, SKILL.md auto-triggers.
 
 ```bash
 # In Claude Code, run:
@@ -131,24 +131,36 @@ After install, just run:
 /spec-smith:forge "add user authentication"
 ```
 
-### Path 2: Claude Code Skill (Lightweight via npx)
+### Path 2: Quick Setup via npx (Any Tool)
 
-Installs just the SKILL.md. You get auto-triggers ("resume", "what was I working on", "create a spec for X") and session start detection.
-
-You **don't** get: `/forge`, `/resume`, `/pause`, `/switch`, `/list`, `/status` slash commands, the researcher agent, or hooks.
+Adds spec management instructions to your tool's config file so it knows how to read, update, and resume specs from `.specs/`.
 
 ```bash
+# Claude Code (skill only — auto-triggers, no slash commands)
 npx skills add ngvoicu/specsmith-forge -a claude-code
+
+# OpenAI Codex → adds to AGENTS.md
+npx skills add ngvoicu/specsmith-forge -a codex
+
+# Cursor → adds to .cursor/rules
+npx skills add ngvoicu/specsmith-forge -a cursor
+
+# Windsurf → adds to .windsurfrules
+npx skills add ngvoicu/specsmith-forge -a windsurf
+
+# Cline → adds to .clinerules
+npx skills add ngvoicu/specsmith-forge -a cline
+
+# Aider → adds to .aider/conventions.md
+npx skills add ngvoicu/specsmith-forge -a aider
+
+# Gemini CLI → adds to GEMINI.md
+npx skills add ngvoicu/specsmith-forge -a gemini
 ```
 
-After install, use natural language:
-```
-"create a spec for user authentication"
-"resume"
-"what was I working on"
-"pause this"
-"show my specs"
-```
+For Claude Code, this installs SKILL.md with auto-triggers ("resume", "what was I working on", "create a spec for X"). You **don't** get slash commands, the researcher agent, or hooks — use Path 1 for the full plugin.
+
+For other tools, this appends a snippet to the tool's instruction file that teaches it the spec workflow.
 
 ### Path 3: CLI (Any Terminal, Any AI Tool)
 
@@ -177,19 +189,20 @@ All CLI commands:
 | `specsmith complete` | Mark spec as done |
 | `specsmith archive <id>` | Archive a spec |
 | `specsmith edit` | Open active spec in your editor |
+| `specsmith openapi` | Generate OpenAPI spec + endpoint docs from codebase |
 | `specsmith setup <tool>` | Configure another AI tool |
 | `specsmith version` | Show version |
 
-### Comparison: Plugin vs Skill vs CLI
+### Comparison: Plugin vs npx vs CLI
 
-| Feature | Plugin (full) | Skill (npx) | CLI |
+| Feature | Plugin (full) | npx (any tool) | CLI |
 |---------|:---:|:---:|:---:|
 | `/forge` research-interview workflow | Yes | No | Yes (`specsmith forge`) |
 | `/resume`, `/pause`, `/switch` commands | Yes | No | Yes |
 | Researcher subagent (Opus, deep analysis) | Yes | No | No |
 | Session start hook (detects active spec) | Yes | No | No |
-| Auto-triggers ("resume", "create a spec") | Yes | Yes | N/A |
-| Works outside Claude Code | No | No | Yes |
+| Auto-triggers (Claude Code only) | Yes | Yes | N/A |
+| Works with Codex, Cursor, Windsurf, etc. | No | Yes | Yes (`specsmith setup`) |
 | Multi-tool `.specs/` compatibility | Yes | Yes | Yes |
 
 ## Usage
@@ -203,6 +216,11 @@ All CLI commands:
 → Interview rounds (targeted questions, not generic)
 → Writes SPEC.md with phases, tasks, decision log
 → Implements task by task
+
+# Generate OpenAPI spec from your codebase
+/spec-smith:openapi
+→ Scans routes, schemas, security config
+→ Writes .openapi/openapi.yaml + per-endpoint docs
 
 # Session ends — save context
 /spec-smith:pause
@@ -218,17 +236,38 @@ All CLI commands:
 /spec-smith:status                  # Detailed progress
 ```
 
-### npx Skill Flow
+### Codex Flow
 
-Same workflow via natural language:
+Codex is task-based — it receives a prompt and executes. The spec gives it structured context it wouldn't otherwise have between sessions.
 
 ```
-"create a spec for OAuth authentication"   → creates SPEC.md
-"resume"                                   → reads active spec, continues
-"what was I working on"                    → shows progress
-"pause this"                               → saves context
-"show my specs"                            → lists all
-"switch to the auth spec"                  → changes active spec
+"resume the auth spec"           → reads SPEC.md, continues from ← current
+"work on the next task"          → finds current task, implements it
+"pause and save context"         → updates resume context in SPEC.md
+```
+
+### Cursor / Windsurf / Cline Flow
+
+These tools are chat-based with project context. Once configured via npx or `specsmith setup`, they understand the spec workflow.
+
+```
+"what's the current spec?"       → reads .specs/active, shows progress
+"implement the next task"        → finds ← current, works on it
+"update the spec with progress"  → checks off tasks, updates resume context
+```
+
+### Aider Flow
+
+```bash
+aider --message "resume the auth spec"    → reads SPEC.md, continues
+aider --message "implement next task"     → works on ← current task
+```
+
+### Gemini CLI Flow
+
+```bash
+gemini "resume the auth spec"    → reads SPEC.md, continues
+gemini "implement next task"     → works on ← current task
 ```
 
 ### CLI Flow
@@ -240,6 +279,9 @@ specsmith new "OAuth Authentication"        # Create spec, edit SPEC.md
 
 # AI-assisted spec creation (needs ANTHROPIC_API_KEY)
 specsmith forge "add OAuth authentication"  # Research → interview → spec
+
+# Generate OpenAPI spec from codebase
+specsmith openapi                           # Scan routes → openapi.yaml + docs
 
 # Working with specs
 specsmith status                            # Progress of active spec
@@ -264,11 +306,19 @@ The spec format is pure markdown. Claude Code, Codex, Cursor, Windsurf, Cline, A
 
 ### Setting Up Other Tools
 
-Run `specsmith setup <tool>` to auto-configure any supported tool. This appends a snippet to the tool's instruction file that teaches it how to read, update, and resume specs.
+The fastest way is via npx (see [Path 2](#path-2-quick-setup-via-npx-any-tool) above):
 
-Supported tools: `cursor`, `codex`, `windsurf`, `cline`, `aider`, `gemini`
+```bash
+npx skills add ngvoicu/specsmith-forge -a <tool>
+```
 
-Or manually add the snippets from `references/tool-setup.md` to your tool's config file.
+Or use the CLI:
+
+```bash
+specsmith setup <tool>    # cursor, codex, windsurf, cline, aider, gemini
+```
+
+Both approaches append a snippet to the tool's instruction file that teaches it how to read, update, and resume specs. You can also manually copy snippets from `references/tool-setup.md`.
 
 ### Cross-Tool Sync
 
@@ -340,7 +390,8 @@ specsmith-forge/
 │   ├── pause.md                    # Pause with context
 │   ├── switch.md                   # Switch between specs
 │   ├── list.md                     # List all specs
-│   └── status.md                   # Detailed progress
+│   ├── status.md                   # Detailed progress
+│   └── openapi.md                  # Generate OpenAPI spec from codebase
 ├── agents/
 │   └── researcher.md               # Deep research subagent (Opus)
 ├── hooks/
