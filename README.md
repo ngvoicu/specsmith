@@ -4,7 +4,7 @@
 
 Spec Smith replaces ephemeral AI coding plans with persistent, resumable specs built through deep research and iterative interviews. Create a spec, work through it task by task, pause, switch to another spec, come back a week later and pick up exactly where you left off.
 
-Works with Claude Code (as a plugin), Codex, Cursor, Windsurf, Cline, and any AI coding tool that can read files.
+Works with Claude Code (as a plugin), Codex, Cursor, Windsurf, Cline, Aider, Gemini CLI, and any AI coding tool that can read files.
 
 ## The Problem
 
@@ -109,47 +109,11 @@ API. Uses the existing middleware pattern in src/middleware/.
 
 ## Installation
 
-### CLI (Any Terminal)
+Three ways to use Spec Smith, depending on your setup.
 
-SpecSmith CLI works standalone from any terminal, with any AI tool, or no AI at all.
+### Path 1: Claude Code Plugin (Full — Recommended)
 
-```bash
-# Core CLI
-pipx install specsmith
-
-# With AI-assisted spec generation
-pipx install "specsmith[ai]"
-```
-
-Quick start:
-
-```bash
-specsmith init                        # Initialize .specs/ in your project
-specsmith new "User Auth System"      # Create a new spec
-specsmith status                      # Show progress
-specsmith list                        # List all specs
-specsmith pause                       # Pause current spec
-specsmith switch other-spec-id        # Switch to another spec
-specsmith setup cursor                # Configure a tool
-specsmith forge "add auth"            # AI-assisted spec creation
-```
-
-See the full [CLI documentation](cli/README.md) for all commands and options.
-
-## Plan Mode
-
-SpecSmith **bypasses** Claude Code's built-in plan mode. The `/forge`
-command IS your planning phase — deep research, interviews, spec writing.
-You don't need plan mode at all.
-
-If you happen to be in plan mode when you run `/forge`, it still works:
-- Research and interviews are read-only and run fine
-- When it's time to write the spec, you'll be asked to exit plan mode
-  (Shift+Tab) so files can be created
-
-### Claude Code (Full Plugin — Recommended)
-
-Installs everything: `/forge`, `/resume`, `/pause`, `/switch`, `/list`, `/status` commands, the researcher agent, session hooks, and the core skill.
+Everything: all 6 slash commands, researcher agent (Opus-powered deep codebase analysis), session start hooks, SKILL.md auto-triggers.
 
 ```bash
 # In Claude Code, run:
@@ -162,63 +126,213 @@ Or manually:
 git clone https://github.com/ngvoicu/specsmith-forge.git ~/.claude/plugins/spec-smith
 ```
 
-### Claude Code (Skill Only via npx)
+After install, just run:
+```
+/spec-smith:forge "add user authentication"
+```
 
-Installs just the SKILL.md — you get auto-triggers (session start detection, "resume", "what was I working on") but **not** the `/forge`, `/resume`, `/pause` commands or the researcher agent.
+### Path 2: Claude Code Skill (Lightweight via npx)
+
+Installs just the SKILL.md. You get auto-triggers ("resume", "what was I working on", "create a spec for X") and session start detection.
+
+You **don't** get: `/forge`, `/resume`, `/pause`, `/switch`, `/list`, `/status` slash commands, the researcher agent, or hooks.
 
 ```bash
 npx skills add ngvoicu/specsmith-forge -a claude-code
 ```
 
-This is the lightweight option. Good if you just want spec tracking without the full research-interview workflow.
+After install, use natural language:
+```
+"create a spec for user authentication"
+"resume"
+"what was I working on"
+"pause this"
+"show my specs"
+```
 
-### What's the Difference?
+### Path 3: CLI (Any Terminal, Any AI Tool)
 
-| Feature | Plugin (full) | Skill only (npx) |
-|---------|:---:|:---:|
-| Spec tracking (create, resume, pause, switch) | Yes | Yes |
-| `/spec-smith:forge` research-interview workflow | Yes | No |
-| `/spec-smith:resume`, `/pause`, `/switch` commands | Yes | No |
-| Researcher subagent (Opus, deep codebase analysis) | Yes | No |
-| Session start hook (detects active spec) | Yes | No |
-| Auto-triggers on "resume", "what was I working on" | Yes | Yes |
-| Works with Codex, Cursor, Windsurf | — | — |
+Standalone `specsmith` command. Works with or without AI, from any terminal.
 
-For other tools, both paths produce the same result since they rely on the SKILL.md instructions and `.specs/` files.
+```bash
+# Core CLI
+pipx install specsmith
 
-### Codex
+# With AI-assisted spec generation (requires ANTHROPIC_API_KEY)
+pipx install "specsmith[ai]"
+```
 
-Add the snippet from `references/tool-setup.md` to your `AGENTS.md`. This teaches Codex how to read, update, and resume specs.
-
-### Cursor / Windsurf / Cline
-
-Add the snippet from `references/tool-setup.md` to `.cursorrules`, `.windsurfrules`, or `.clinerules` respectively.
-
-## Commands
+All CLI commands:
 
 | Command | What it does |
 |---------|-------------|
-| `/spec-smith:forge <description>` | **The main workflow.** Research → interview → spec → implement |
-| `/spec-smith:resume` | Resume the active spec from where you left off |
-| `/spec-smith:pause` | Pause with detailed resume context |
-| `/spec-smith:switch <id>` | Switch to a different spec (pauses current) |
-| `/spec-smith:list` | List all specs grouped by status |
-| `/spec-smith:status` | Detailed progress of the active spec |
+| `specsmith init` | Initialize `.specs/` in your project |
+| `specsmith new "Title"` | Create a new spec |
+| `specsmith forge "description"` | AI-assisted research → interview → spec |
+| `specsmith status` | Show progress of active spec |
+| `specsmith list` | List all specs |
+| `specsmith switch <id>` | Switch to a different spec |
+| `specsmith pause` | Pause current spec with context |
+| `specsmith resume` | Resume a paused spec |
+| `specsmith complete` | Mark spec as done |
+| `specsmith archive <id>` | Archive a spec |
+| `specsmith edit` | Open active spec in your editor |
+| `specsmith setup <tool>` | Configure another AI tool |
+| `specsmith version` | Show version |
 
-You can also use natural language — "resume", "what was I working on", "show my specs", "switch to the auth spec", "pause this".
+### Comparison: Plugin vs Skill vs CLI
+
+| Feature | Plugin (full) | Skill (npx) | CLI |
+|---------|:---:|:---:|:---:|
+| `/forge` research-interview workflow | Yes | No | Yes (`specsmith forge`) |
+| `/resume`, `/pause`, `/switch` commands | Yes | No | Yes |
+| Researcher subagent (Opus, deep analysis) | Yes | No | No |
+| Session start hook (detects active spec) | Yes | No | No |
+| Auto-triggers ("resume", "create a spec") | Yes | Yes | N/A |
+| Works outside Claude Code | No | No | Yes |
+| Multi-tool `.specs/` compatibility | Yes | Yes | Yes |
+
+## Usage
+
+### Claude Code Plugin Flow
+
+```
+# Start a new spec with deep research
+/spec-smith:forge "add OAuth authentication"
+→ Deep research (reads 10-20+ files, web search, library docs)
+→ Interview rounds (targeted questions, not generic)
+→ Writes SPEC.md with phases, tasks, decision log
+→ Implements task by task
+
+# Session ends — save context
+/spec-smith:pause
+→ Writes detailed resume context (file paths, function names, next step)
+
+# New session — pick up where you left off
+/spec-smith:resume
+→ Reads resume context, continues from exact spot
+
+# Juggling features
+/spec-smith:list                    # See all specs
+/spec-smith:switch auth-system      # Pauses current, activates auth-system
+/spec-smith:status                  # Detailed progress
+```
+
+### npx Skill Flow
+
+Same workflow via natural language:
+
+```
+"create a spec for OAuth authentication"   → creates SPEC.md
+"resume"                                   → reads active spec, continues
+"what was I working on"                    → shows progress
+"pause this"                               → saves context
+"show my specs"                            → lists all
+"switch to the auth spec"                  → changes active spec
+```
+
+### CLI Flow
+
+```bash
+# Manual spec creation
+specsmith init                              # Set up .specs/
+specsmith new "OAuth Authentication"        # Create spec, edit SPEC.md
+
+# AI-assisted spec creation (needs ANTHROPIC_API_KEY)
+specsmith forge "add OAuth authentication"  # Research → interview → spec
+
+# Working with specs
+specsmith status                            # Progress of active spec
+specsmith list                              # All specs, grouped by status
+specsmith pause --context "halfway through token rotation"
+specsmith resume
+specsmith switch other-spec-id
+specsmith complete
+
+# Configure other tools to use your specs
+specsmith setup cursor                      # Adds to .cursorrules
+specsmith setup codex                       # Adds to AGENTS.md
+specsmith setup windsurf                    # Adds to .windsurfrules
+specsmith setup cline                       # Adds to .clinerules
+specsmith setup aider                       # Adds to .aider/conventions.md
+specsmith setup gemini                      # Adds to GEMINI.md
+```
 
 ## Multi-Tool Support
 
-The spec format is pure markdown. If you use Claude Code for complex features and Codex for batch tasks, they share the same `.specs/` directory. The `← current` marker and resume context keep them in sync.
+The spec format is pure markdown. Claude Code, Codex, Cursor, Windsurf, Cline, Aider, and Gemini CLI can all work on the same `.specs/` directory.
 
-One rule: don't run two tools on the same spec simultaneously. Different specs in parallel is fine.
+### Setting Up Other Tools
+
+Run `specsmith setup <tool>` to auto-configure any supported tool. This appends a snippet to the tool's instruction file that teaches it how to read, update, and resume specs.
+
+Supported tools: `cursor`, `codex`, `windsurf`, `cline`, `aider`, `gemini`
+
+Or manually add the snippets from `references/tool-setup.md` to your tool's config file.
+
+### Cross-Tool Sync
+
+All tools share the same files:
+- **`← current` marker** — Every tool knows which task is next
+- **Resume Context** — Detailed state with file paths and function names
+- **Phase status markers** — `[pending]`, `[in-progress]`, `[completed]`, `[blocked]`
+
+**One rule:** Don't run two tools on the same spec simultaneously. Different specs in parallel is fine.
+
+## The Forge Workflow (Detailed)
+
+### Phase 1: Deep Research
+
+Not a quick scan. The researcher reads 10-20+ files, following dependency chains, checking tests, examining config. Also runs web searches for best practices, pulls library docs via Context7.
+
+Output saved to `.specs/research/<id>/research-01.md`. Covers:
+- Project architecture and directory structure
+- Every file touching the area of change
+- Tech stack versions (from lock files, not guesses)
+- How similar features are currently implemented
+- Test patterns and coverage
+- Risk assessment
+
+### Phase 2-4: Interviews
+
+Targeted questions based on what research found. Not generic "what do you want?" — specific questions like:
+
+- "I see rate limiting middleware at `src/middleware/rateLimit.ts`. Should auth endpoints use the same limiter or a stricter one?"
+- "The User model uses Prisma. Should OAuth tokens go in the same schema or a separate `AuthToken` model?"
+
+Multiple rounds (typically 2-5) until every task can be described concretely. Each round saved to `interview-01.md`, `interview-02.md`, etc.
+
+### Phase 5: Write Spec
+
+Synthesizes everything into a SPEC.md:
+- 3-6 phases, each with concrete tasks
+- Each task is ~30 min to 2 hours of work
+- Decision log captures non-obvious technical choices
+- Resume context section ready for first pause
+
+### Phase 6: Implement
+
+Works through the spec task by task:
+- Marks tasks `← current` as they start
+- Checks off `- [x]` when done
+- Updates phase status markers
+- Logs new decisions to the Decision Log
+- Updates Resume Context at natural pauses
+
+## Plan Mode
+
+Spec Smith **bypasses** Claude Code's built-in plan mode. The `/forge` command IS your planning phase — deep research, interviews, spec writing. You don't need plan mode at all.
+
+If you happen to be in plan mode when you run `/forge`, it still works:
+- Research and interviews are read-only and run fine
+- When it's time to write the spec, you'll be asked to exit plan mode (Shift+Tab) so files can be created
 
 ## Plugin Structure
 
 ```
 specsmith-forge/
 ├── .claude-plugin/
-│   ├── plugin.json                 # Plugin metadata
+│   ├── plugin.json                 # Plugin metadata (v0.2.0)
 │   └── marketplace.json            # Marketplace registration
 ├── commands/
 │   ├── forge.md                    # Research → interview → spec → implement
@@ -228,18 +342,86 @@ specsmith-forge/
 │   ├── list.md                     # List all specs
 │   └── status.md                   # Detailed progress
 ├── agents/
-│   └── researcher.md               # Deep research subagent
+│   └── researcher.md               # Deep research subagent (Opus)
 ├── hooks/
 │   └── hooks.json                  # SessionStart detection
-├── SKILL.md                        # Core skill (auto-triggers)
 ├── references/
-│   ├── spec-format.md              # SPEC.md template and format spec
-│   └── tool-setup.md               # Setup snippets for Codex, Cursor, etc.
-└── scripts/
-    ├── init_specs.py               # Initialize .specs/ directory
-    ├── new_spec.py                 # Create a spec from CLI
-    └── spec_status.py              # Show progress from CLI
+│   ├── spec-format.md              # SPEC.md format specification
+│   └── tool-setup.md               # Setup snippets for all tools
+├── scripts/
+│   ├── init_specs.py               # Initialize .specs/
+│   ├── new_spec.py                 # Create a spec
+│   └── spec_status.py              # Show progress
+├── SKILL.md                        # Core skill (auto-triggers)
+└── cli/                            # Python CLI package (v0.1.0)
+    ├── pyproject.toml
+    ├── src/specsmith/
+    │   ├── cli.py                  # Typer app
+    │   ├── display.py              # Terminal UI
+    │   ├── core/                   # Data model + file management
+    │   ├── commands/               # Command implementations
+    │   ├── ai/                     # AI forge (Anthropic API)
+    │   └── setup_snippets/         # Tool config snippets
+    └── tests/
 ```
+
+## Spec Format
+
+Full specification in [`references/spec-format.md`](references/spec-format.md).
+
+### Frontmatter
+
+| Field | Required | Description |
+|-------|:---:|-------------|
+| `id` | Yes | URL-safe slug (e.g., `user-auth-system`) |
+| `title` | Yes | Human-readable name |
+| `status` | Yes | `active`, `paused`, `completed`, `archived` |
+| `created` | Yes | ISO date (YYYY-MM-DD) |
+| `updated` | Yes | ISO date of last modification |
+| `priority` | No | `high`, `medium`, `low` (default: medium) |
+| `tags` | No | YAML array |
+
+### Conventions
+
+- **Phase markers**: `[pending]`, `[in-progress]`, `[completed]`, `[blocked]`
+- **Task checkboxes**: `- [ ]` unchecked, `- [x]` done
+- **Current task**: `← current` after the task text
+- **Uncertainty**: `[NEEDS CLARIFICATION]` prefix on unclear tasks
+- **Resume Context**: Blockquote with specific file paths, function names, exact next step
+- **Decision Log**: Table with date, decision, rationale
+
+## CLI Reference
+
+### Global Flags
+
+| Flag | Description |
+|------|-------------|
+| `--path, -p <dir>` | Project root directory |
+| `--no-color` | Disable colored output |
+| `--json` | Output as JSON |
+| `--verbose, -v` | Verbose output |
+
+### Forge Options
+
+```bash
+specsmith forge "description" \
+  --model claude-sonnet-4-20250514 \    # Model to use
+  --include <path> \                    # Additional files to include
+  --edit \                              # Open spec in editor after creation
+  --dry-run \                           # Preview without writing files
+  --api-key <key>                       # Anthropic API key (or ANTHROPIC_API_KEY env)
+```
+
+### Other Command Options
+
+```bash
+specsmith new "Title" --priority high   # Set priority on creation
+specsmith pause --context "message"     # Add context message
+specsmith complete --force              # Skip confirmation
+specsmith setup <tool> --dry-run       # Preview config changes
+```
+
+See the full [CLI documentation](cli/README.md) for details.
 
 ## Why Not Just Use Plan Mode?
 
