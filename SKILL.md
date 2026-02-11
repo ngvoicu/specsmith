@@ -7,6 +7,7 @@ description: >
   exits plan mode (automatically offer to save the plan as a spec), says
   "resume" or "what was I working on", wants to switch between projects,
   mentions specs/phases/tasks, says "spec new/list/resume/status/pause/activate",
+  says "generate openapi", "update api spec", "create api docs", "openapi",
   or any workflow involving structured planning that should persist. Also
   trigger when the user starts a new Claude Code session in a project that
   has a `.specs/` directory — check for an active spec and offer to resume.
@@ -31,6 +32,7 @@ Spec Smith is a Claude Code plugin. These commands are the primary interface:
 | `/spec-smith:switch <id>` | Switch to a different spec (pauses current) |
 | `/spec-smith:list` | List all specs with status and progress |
 | `/spec-smith:status` | Detailed progress of the active spec |
+| `/spec-smith:openapi` | Scan the project and generate/update `.openapi/openapi.yaml` + per-endpoint docs in `.openapi/endpoints/` |
 
 The `/forge` command is the key innovation — it's what plan mode should be.
 Instead of a quick scan and a plan, it does exhaustive research, interviews

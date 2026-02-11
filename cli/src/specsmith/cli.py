@@ -40,6 +40,23 @@ def _resolve_root(path: Path | None) -> Path:
     return Path.cwd()
 
 
+_PROJECT_MARKERS = {".git", "package.json", "pyproject.toml", "Cargo.toml", "go.mod", "pom.xml", "Gemfile"}
+
+
+def _resolve_project_root(path: Path | None) -> Path:
+    """Resolve project root by walking up to find .git or a package manifest."""
+    if path is not None:
+        return Path(path).resolve()
+    current = Path.cwd().resolve()
+    while True:
+        if any((current / m).exists() for m in _PROJECT_MARKERS):
+            return current
+        parent = current.parent
+        if parent == current:
+            return Path.cwd()
+        current = parent
+
+
 # ── Commands ─────────────────────────────────────────────────────────
 
 
@@ -182,6 +199,20 @@ def forge(
     from specsmith.commands.forge import forge as do_forge
 
     do_forge(_resolve_root(path), description, model, include, edit_after, dry_run, api_key)
+
+
+@app.command()
+def openapi(
+    model: Annotated[str, typer.Option(help="Claude model to use.")] = "claude-sonnet-4-20250514",
+    include: Annotated[Optional[list[str]], typer.Option("--include", help="Additional files to include in context.")] = None,
+    dry_run: Annotated[bool, typer.Option("--dry-run", help="Print to stdout instead of saving.")] = False,
+    api_key: Annotated[Optional[str], typer.Option("--api-key", help="Anthropic API key.")] = None,
+    path: PathOption = None,
+) -> None:
+    """Generate OpenAPI 3.1.1 spec + endpoint docs from project codebase (requires ANTHROPIC_API_KEY)."""
+    from specsmith.commands.openapi import openapi as do_openapi
+
+    do_openapi(_resolve_project_root(path), model, include, dry_run, api_key)
 
 
 @app.command()
