@@ -252,15 +252,13 @@ The spec format is pure markdown with YAML frontmatter. Any tool that can
 read and write files can use these specs:
 
 - **Claude Code**: Full plugin support or skill via `npx skills add`
-- **Codex**: Snippet in AGENTS.md (see `references/tool-setup.md`)
+- **Codex**: Snippet in AGENTS.md or skill via `npx skills add`
 - **Cursor / Windsurf / Cline**: Snippet in rules file
-- **Aider**: Snippet in `.aider/conventions.md`
 - **Gemini CLI**: Snippet in GEMINI.md
 - **Humans**: Readable and editable in any text editor
 - **Git**: Diffs cleanly, easy to track in version control
 
-To configure another tool, see `references/tool-setup.md` for setup
-snippets, or run `npx skills add ngvoicu/specsmith-forge -a <tool>`.
+To configure another tool, run `npx skills add ngvoicu/specsmith-forge -a <tool>`.
 
 ## Behavioral Notes
 

@@ -4,7 +4,7 @@
 
 Spec Smith replaces ephemeral AI coding plans with persistent, resumable specs built through deep research and iterative interviews. Create a spec, work through it task by task, pause, switch to another spec, come back a week later and pick up exactly where you left off.
 
-Works with Claude Code (as a plugin), Codex, Cursor, Windsurf, Cline, Aider, Gemini CLI, and any AI coding tool that can read files.
+Works with Claude Code (as a plugin), Codex, Cursor, Windsurf, Cline, Gemini CLI, and any AI coding tool that can read files.
 
 ## The Problem
 
@@ -202,53 +202,65 @@ For other tools, this installs the SKILL.md which teaches the tool the full spec
 /spec-smith:status                  # Detailed progress
 ```
 
-### Codex Flow
+### Any Tool Flow (Codex, Cursor, Windsurf, Cline, Gemini CLI)
 
-Codex is task-based — it receives a prompt and executes. The spec gives it structured context it wouldn't otherwise have between sessions.
+Once configured via `npx skills add`, every tool understands the same spec lifecycle. Here's the complete workflow:
 
+**Create a spec** — Ask the tool to plan or spec out work. It creates `.specs/specs/<id>/SPEC.md` with phases, tasks, a decision log, and resume context.
+
+**Resume** — The tool reads `.specs/active`, loads the SPEC.md, finds the `← current` task, reads the Resume Context section, and continues from exactly where you left off.
+
+**Pause** — The tool captures current state into the Resume Context section: which files were modified (specific paths, function names), what was completed, the exact next step. Updates checkboxes, sets status to `paused`.
+
+**Switch** — The tool pauses the current spec (full pause), loads the target spec, writes its ID to `.specs/active`, and resumes it.
+
+**List** — The tool reads `.specs/registry.md` and shows specs grouped by status (active, paused, completed).
+
+**Complete** — The tool verifies all tasks are checked, sets status to `completed`, updates the registry, and clears `.specs/active`.
+
+#### Tool-specific invocation examples
+
+**Codex** (task-based prompts):
 ```
-"resume the auth spec"           → reads SPEC.md, continues from ← current
-"work on the next task"          → finds current task, implements it
-"pause and save context"         → updates resume context in SPEC.md
+"create a spec for user authentication"
+"resume the auth spec"
+"pause and save context"
+"switch to the api-refactor spec"
+"show my specs"
+"mark the spec as done"
 ```
 
-### Cursor / Windsurf / Cline Flow
-
-These tools are chat-based with project context. Once configured via `npx skills add`, they understand the spec workflow.
-
+**Cursor / Windsurf / Cline** (chat-based):
 ```
-"what's the current spec?"       → reads .specs/active, shows progress
-"implement the next task"        → finds ← current, works on it
-"update the spec with progress"  → checks off tasks, updates resume context
+"plan out a caching layer"
+"what was I working on?"
+"save my progress and pause"
+"switch to the auth spec"
+"list all specs"
+"complete the current spec"
 ```
 
-### Aider Flow
-
+**Gemini CLI**:
 ```bash
-aider --message "resume the auth spec"    → reads SPEC.md, continues
-aider --message "implement next task"     → works on ← current task
-```
-
-### Gemini CLI Flow
-
-```bash
-gemini "resume the auth spec"    → reads SPEC.md, continues
-gemini "implement next task"     → works on ← current task
+gemini "create a spec for rate limiting"
+gemini "resume"
+gemini "pause and save context"
+gemini "switch to auth-system"
 ```
 
 ## Multi-Tool Support
 
-The spec format is pure markdown. Claude Code, Codex, Cursor, Windsurf, Cline, Aider, and Gemini CLI can all work on the same `.specs/` directory.
+The spec format is pure markdown. Claude Code, Codex, Cursor, Windsurf, Cline, and Gemini CLI can all work on the same `.specs/` directory.
 
 ### Setting Up Other Tools
 
-The fastest way is via npx (see [Path 2](#path-2-quick-setup-via-npx-any-tool) above):
+Most tools can be set up via npx (see [Path 2](#path-2-quick-setup-via-npx-any-tool) above):
 
 ```bash
 npx skills add ngvoicu/specsmith-forge -a <tool>
 ```
 
-You can also manually copy snippets from `references/tool-setup.md`.
+For manual setup, see the snippet format in [SKILL.md](SKILL.md).
 
 ### Cross-Tool Sync
 
@@ -327,8 +339,7 @@ specsmith-forge/
 ├── hooks/
 │   └── hooks.json                  # SessionStart detection
 ├── references/
-│   ├── spec-format.md              # SPEC.md format specification
-│   └── tool-setup.md               # Setup snippets for all tools
+│   └── spec-format.md              # SPEC.md format specification
 ├── SKILL.md                        # Universal skill (works with all tools)
 └── README.md
 ```

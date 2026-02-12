@@ -27,8 +27,7 @@ specsmith-forge/
 ├── hooks/
 │   └── hooks.json           # SessionStart hook — detects active specs
 ├── references/
-│   ├── spec-format.md       # Complete SPEC.md format specification
-│   └── tool-setup.md        # Setup snippets for Codex, Cursor, etc.
+│   └── spec-format.md       # Complete SPEC.md format specification
 ├── SKILL.md                 # Universal skill definition (works with all tools)
 └── README.md
 ```
@@ -97,5 +96,5 @@ Phases: `[pending]`, `[in-progress]`, `[completed]`, `[blocked]`
 - Plugin commands are pure markdown — edit `commands/*.md` to change behavior
 - SKILL.md is universal — it must work for all AI tools, not just Claude Code
 - The Claude Code Plugin section in SKILL.md is tool-specific (~20 lines at the top)
-- Setup snippets in `references/tool-setup.md` are for manual tool configuration
+- All supported tools use `npx skills add` for setup
 - No build step — markdown files are consumed directly
