@@ -2,11 +2,12 @@
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f .specs/active ] && [ -s .specs/active ]; then SPEC_ID=$(cat .specs/active); if [ -f \".specs/specs/$SPEC_ID/SPEC.md\" ]; then echo \"{\\\"specId\\\": \\\"$SPEC_ID\\\", \\\"hasActiveSpec\\\": true}\" >&2; fi; fi",
-            "timeout": 5
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh",
+            "timeout": 10
           }
         ]
       }

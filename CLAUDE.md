@@ -25,7 +25,8 @@ specsmith-forge/
 ├── agents/
 │   └── researcher.md        # Deep research subagent (opus model)
 ├── hooks/
-│   └── hooks.json           # SessionStart hook — detects active specs
+│   ├── hooks.json           # SessionStart hook — matcher + external script
+│   └── session-start.sh     # Rich context injection script
 ├── references/
 │   └── spec-format.md       # Complete SPEC.md format specification
 ├── SKILL.md                 # Universal skill definition (works with all tools)
@@ -41,7 +42,8 @@ The plugin is consumed directly by Claude Code — no build step. Markdown files
 - **`plugin.json`** — Plugin identity (name: `spec-smith`, version: `0.2.0`)
 - **`commands/*.md`** — Each file is a slash command. Claude reads these as instructions.
 - **`agents/researcher.md`** — Subagent definition. Uses Opus model with Read, Glob, Grep, Bash, WebSearch, WebFetch, Task tools for exhaustive codebase analysis.
-- **`hooks/hooks.json`** — SessionStart hook checks `.specs/active` and reports the active spec ID.
+- **`hooks/hooks.json`** — SessionStart hook with matcher (`startup|resume|clear|compact`) that runs `session-start.sh` via `${CLAUDE_PLUGIN_ROOT}`. Re-injects context after `/clear` and `/compact`.
+- **`hooks/session-start.sh`** — External script that reads `.specs/active` and the SPEC.md, parses title, status, priority, task counts, current phase/task, and resume context. Outputs a rich human-readable summary. Exits 0 silently when no active spec exists.
 - **`SKILL.md`** — Universal skill with sections for all tools + Claude Code plugin section. Defines natural language triggers ("resume", "what was I working on", "create a spec for X") and session lifecycle behavior.
 
 ### Data Layer — `.specs/` Directory

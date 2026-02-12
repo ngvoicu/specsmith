@@ -48,7 +48,14 @@ exit plan mode so files can be created.
 
 ## Session Start
 
-When a session begins in a project that has `.specs/`:
+When running as a Claude Code plugin, the session hook automatically injects
+a rich summary of the active spec (title, progress, current phase/task, and
+resume context) into `additionalContext`. If you see this injected context,
+use it directly — no need to read files again. Just greet with a brief note
+like "You have an active spec" and let the user decide what to do.
+
+When running as a standalone skill (no plugin / no hook-injected context),
+fall back to reading files manually:
 
 1. Read `.specs/active` to check for an active spec
 2. If one exists, briefly mention it:
