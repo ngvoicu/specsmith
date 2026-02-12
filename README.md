@@ -149,9 +149,8 @@ npx skills add ngvoicu/specsmith-forge -a codex
 # Cursor
 npx skills add ngvoicu/specsmith-forge -a cursor
 
-# Windsurf (see Windsurf Note below)
+# Windsurf (see Windsurf Note below — extra step required)
 npx skills add ngvoicu/specsmith-forge -a windsurf
-rm .windsurf/skills/specsmith && cp -r .agents/skills/specsmith .windsurf/skills/specsmith
 
 # Cline
 npx skills add ngvoicu/specsmith-forge -a cline
@@ -168,10 +167,16 @@ For other tools, this installs the SKILL.md which teaches the tool the full spec
 
 `npx skills add -a windsurf` creates a symlink that Windsurf Cascade doesn't follow. After installing, replace the symlink with a real copy:
 
+**macOS / Linux:**
 ```bash
-npx skills add ngvoicu/specsmith-forge -a windsurf
 rm .windsurf/skills/specsmith
 cp -r .agents/skills/specsmith .windsurf/skills/specsmith
+```
+
+**Windows (PowerShell):**
+```powershell
+Remove-Item .windsurf\skills\specsmith
+Copy-Item -Recurse .agents\skills\specsmith .windsurf\skills\specsmith
 ```
 
 Cascade will auto-activate the skill when your request matches the description, or you can invoke it manually with `@specsmith`.
