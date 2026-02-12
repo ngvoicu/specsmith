@@ -1,32 +1,33 @@
 # Tool Setup Guide
 
-Spec Smith works with any AI coding tool that can read and write files. But
-each tool needs to be told about the `.specs/` directory through its own
-instruction mechanism.
+Spec Smith works with any AI coding tool that can read and write files. Each
+tool needs to know about the `.specs/` directory through its own instruction
+mechanism.
 
-Below are copy-paste snippets for each tool. Add the relevant one to your
-project and the tool will know how to work with specs.
+The fastest way to set up any tool is via `npx skills add`, which installs
+the universal SKILL.md into the tool's skill/instruction directory. For tools
+that don't support `npx skills add`, copy-paste the manual snippets below.
 
 ## Claude Code
 
-Claude Code has native skill support. Just install the skill:
+Claude Code has native skill support. Install via npx:
 
 ```bash
-# From GitHub (via npx skills add)
-npx skills add <owner>/spec-smith --skill spec-smith -a claude-code
-
-# Or manually: copy the spec-smith/ directory to
-# .claude/skills/spec-smith/    (project-level)
-# ~/.claude/skills/spec-smith/  (global)
+npx skills add ngvoicu/specsmith-forge -a claude-code
+# Installs to .claude/skills/spec-smith/SKILL.md
 ```
 
-No additional config needed — Claude Code reads SKILL.md automatically.
+Or manually: copy the `SKILL.md` file to `.claude/skills/spec-smith/SKILL.md`
+(project-level) or `~/.claude/skills/spec-smith/SKILL.md` (global).
+
+For the full plugin experience (slash commands, researcher agent, hooks),
+install the plugin instead — see README.md.
 
 ## OpenAI Codex
 
-Quick setup:
 ```bash
 npx skills add ngvoicu/specsmith-forge -a codex
+# Installs to .agents/skills/spec-smith/SKILL.md
 ```
 
 Or manually — Codex uses `AGENTS.md` (or `codex.md`) for instructions. Add this block:
@@ -72,25 +73,11 @@ When asked to plan or spec out work, create a SPEC.md in
 See `.specs/specs/` for examples of existing specs.
 ```
 
-### Why this works for Codex
-
-Codex doesn't have plan mode. It receives a task and executes. The spec
-replaces plan mode by giving Codex structured context about:
-
-- What the overall goal is (Overview)
-- What's already been done (checked tasks)
-- What to do right now (← current marker)
-- What happened last time (Resume Context)
-
-This means you can give Codex a simple prompt like "resume the auth spec"
-and it has everything it needs to pick up where the last session left off,
-even though it has no memory of previous sessions.
-
 ## Cursor
 
-Quick setup:
 ```bash
 npx skills add ngvoicu/specsmith-forge -a cursor
+# Installs to .cursor/skills/spec-smith/SKILL.md
 ```
 
 Or manually — Cursor uses `.cursor/rules` (or `.cursorrules`) for project instructions.
@@ -120,9 +107,9 @@ Before finishing:
 
 ## Windsurf
 
-Quick setup:
 ```bash
 npx skills add ngvoicu/specsmith-forge -a windsurf
+# Installs to .windsurf/skills/spec-smith/SKILL.md
 ```
 
 Or manually — Windsurf uses `.windsurfrules` for project instructions. Add the same
@@ -130,9 +117,9 @@ content as the Cursor section above.
 
 ## Cline
 
-Quick setup:
 ```bash
 npx skills add ngvoicu/specsmith-forge -a cline
+# Installs to .cline/skills/spec-smith/SKILL.md
 ```
 
 Or manually — Cline uses `.clinerules` for project instructions. Add the same content
@@ -140,19 +127,15 @@ as the Cursor section above.
 
 ## Aider
 
-Quick setup:
-```bash
-npx skills add ngvoicu/specsmith-forge -a aider
-```
-
-Or manually — Aider uses `.aider.conf.yml` or reads from conventions files. Create a
+Aider is not supported by `npx skills add`. Set it up manually — Aider uses
+`.aider.conf.yml` or reads from conventions files. Create a
 `.aider/conventions.md` with the Cursor snippet above.
 
 ## Gemini CLI
 
-Quick setup:
 ```bash
 npx skills add ngvoicu/specsmith-forge -a gemini
+# Installs to .agents/skills/spec-smith/SKILL.md
 ```
 
 Or manually — Gemini CLI uses `GEMINI.md` for project instructions. Add the same

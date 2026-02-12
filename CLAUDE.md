@@ -2,10 +2,10 @@
 
 ## Project Overview
 
-SpecSmith Forge is a Claude Code plugin + Python CLI that replaces ephemeral AI coding plans with persistent, resumable specs. It has two layers:
+SpecSmith Forge is a Claude Code plugin that replaces ephemeral AI coding plans with persistent, resumable specs. It has two layers:
 
 1. **Plugin layer** — Markdown-based Claude Code plugin (commands, agents, hooks, skill)
-2. **CLI layer** — Standalone Python CLI (`specsmith`) that works from any terminal
+2. **Skill layer** — Universal SKILL.md that works with any AI coding tool via `npx skills add`
 
 ## Repository Structure
 
@@ -29,35 +29,7 @@ specsmith-forge/
 ├── references/
 │   ├── spec-format.md       # Complete SPEC.md format specification
 │   └── tool-setup.md        # Setup snippets for Codex, Cursor, etc.
-├── scripts/                 # Standalone Python utility scripts
-│   ├── init_specs.py
-│   ├── new_spec.py
-│   └── spec_status.py
-├── SKILL.md                 # Claude Code skill definition (auto-triggers)
-├── cli/                     # Python CLI package
-│   ├── pyproject.toml       # specsmith v0.1.0, Python 3.10+
-│   ├── src/specsmith/
-│   │   ├── cli.py           # Main Typer app, all commands registered here
-│   │   ├── display.py       # Terminal UI (colors, progress bars, tables)
-│   │   ├── core/            # Spec data model and file management
-│   │   │   ├── spec.py      # Spec, Phase, Task dataclasses
-│   │   │   ├── parser.py    # Parse SPEC.md files
-│   │   │   ├── template.py  # SPEC.md template
-│   │   │   ├── paths.py     # Find .specs/ directory
-│   │   │   ├── active.py    # Manage .specs/active file
-│   │   │   ├── registry.py  # Manage .specs/registry.md
-│   │   │   └── slugify.py   # Title → spec-id conversion
-│   │   ├── commands/        # CLI command implementations (12 files)
-│   │   ├── ai/              # AI-assisted spec generation
-│   │   │   ├── client.py    # Anthropic API wrapper
-│   │   │   ├── forge.py     # Forge workflow orchestration
-│   │   │   └── prompts.py   # LLM prompts
-│   │   └── setup_snippets/  # Tool config snippets (.md for each tool)
-│   └── tests/
-│       ├── test_commands.py
-│       ├── test_parser.py
-│       ├── test_registry.py
-│       └── test_slugify.py
+├── SKILL.md                 # Universal skill definition (works with all tools)
 └── README.md
 ```
 
@@ -71,15 +43,7 @@ The plugin is consumed directly by Claude Code — no build step. Markdown files
 - **`commands/*.md`** — Each file is a slash command. Claude reads these as instructions.
 - **`agents/researcher.md`** — Subagent definition. Uses Opus model with Read, Glob, Grep, Bash, WebSearch, WebFetch, Task tools for exhaustive codebase analysis.
 - **`hooks/hooks.json`** — SessionStart hook checks `.specs/active` and reports the active spec ID.
-- **`SKILL.md`** — Defines natural language triggers ("resume", "what was I working on", "create a spec for X") and session lifecycle behavior.
-
-### CLI Layer
-
-Python package in `cli/`. Entry point: `specsmith.cli:app` (Typer).
-
-- **Dependencies**: `typer[all]>=0.12`, `pyyaml>=6.0`
-- **Optional**: `anthropic>=0.40` (install with `pip install "specsmith[ai]"`)
-- **Build system**: Hatchling
+- **`SKILL.md`** — Universal skill with sections for all tools + Claude Code plugin section. Defines natural language triggers ("resume", "what was I working on", "create a spec for X") and session lifecycle behavior.
 
 ### Data Layer — `.specs/` Directory
 
@@ -124,38 +88,14 @@ Phases: `[pending]`, `[in-progress]`, `[completed]`, `[blocked]`
 5. Write SPEC.md → `.specs/specs/<id>/SPEC.md`
 6. Implement → work through tasks, update checkboxes
 
-## Build & Test
-
-### CLI
-
-```bash
-cd cli
-pip install -e ".[ai]"   # Dev install with AI support
-pytest                    # Run tests
-```
-
-### Plugin
-
-No build step. Markdown files are consumed directly by Claude Code.
-
 ## Versions
 
 - **Plugin**: v0.2.0 (`.claude-plugin/plugin.json`)
-- **CLI**: v0.1.0 (`cli/pyproject.toml`)
-
-## Dependencies
-
-- Python 3.10+ (CLI)
-- `typer[all]>=0.12` — CLI framework
-- `pyyaml>=6.0` — YAML frontmatter parsing
-- `anthropic>=0.40` — Optional, for AI forge command
 
 ## Working on This Codebase
 
 - Plugin commands are pure markdown — edit `commands/*.md` to change behavior
-- CLI commands live in `cli/src/specsmith/commands/` — one file per command
-- The core data model is in `cli/src/specsmith/core/spec.py` (Spec, Phase, Task dataclasses)
-- Parser (`core/parser.py`) reads SPEC.md files and must handle all format variations in `references/spec-format.md`
-- Template (`core/template.py`) generates new SPEC.md files
-- Setup snippets in `cli/src/specsmith/setup_snippets/` are markdown fragments injected into tool config files
-- Tests are in `cli/tests/` — run with `pytest` from the `cli/` directory
+- SKILL.md is universal — it must work for all AI tools, not just Claude Code
+- The Claude Code Plugin section in SKILL.md is tool-specific (~20 lines at the top)
+- Setup snippets in `references/tool-setup.md` are for manual tool configuration
+- No build step — markdown files are consumed directly
