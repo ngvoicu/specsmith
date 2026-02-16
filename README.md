@@ -121,13 +121,13 @@ Everything: all 7 slash commands (`/forge`, `/resume`, `/pause`, `/switch`, `/li
 
 ```bash
 # In Claude Code, run:
-/plugin marketplace add ngvoicu/specsmith-forge
+/plugin marketplace add ngvoicu/specsmith
 /plugin install specsmith
 ```
 
 Or manually:
 ```bash
-git clone https://github.com/ngvoicu/specsmith-forge.git ~/.claude/plugins/specsmith
+git clone https://github.com/ngvoicu/specsmith.git ~/.claude/plugins/specsmith
 ```
 
 After install, just run:
@@ -141,22 +141,22 @@ Installs the SKILL.md into your tool's skill/instruction directory so it knows h
 
 ```bash
 # Claude Code (skill only — auto-triggers, no slash commands)
-npx skills add ngvoicu/specsmith-forge -a claude-code
+npx skills add ngvoicu/specsmith -a claude-code
 
 # OpenAI Codex
-npx skills add ngvoicu/specsmith-forge -a codex
+npx skills add ngvoicu/specsmith -a codex
 
 # Cursor
-npx skills add ngvoicu/specsmith-forge -a cursor
+npx skills add ngvoicu/specsmith -a cursor
 
 # Windsurf (see Windsurf Note below — extra step required)
-npx skills add ngvoicu/specsmith-forge -a windsurf
+npx skills add ngvoicu/specsmith -a windsurf
 
 # Cline
-npx skills add ngvoicu/specsmith-forge -a cline
+npx skills add ngvoicu/specsmith -a cline
 
 # Gemini CLI
-npx skills add ngvoicu/specsmith-forge -a gemini
+npx skills add ngvoicu/specsmith -a gemini
 ```
 
 For Claude Code, this installs SKILL.md with auto-triggers ("resume", "what was I working on", "create a spec for X"). You **don't** get slash commands, the researcher agent, or hooks — use Path 1 for the full plugin.
@@ -284,7 +284,7 @@ The spec format is pure markdown. Claude Code, Codex, Cursor, Windsurf, Cline, a
 Most tools can be set up via npx (see [Path 2](#path-2-quick-setup-via-npx-any-tool) above):
 
 ```bash
-npx skills add ngvoicu/specsmith-forge -a <tool>
+npx skills add ngvoicu/specsmith -a <tool>
 ```
 
 For manual setup, see the snippet format in [SKILL.md](SKILL.md).
@@ -350,7 +350,7 @@ If you happen to be in plan mode when you run `/forge`, it still works:
 ## Project Structure
 
 ```
-specsmith-forge/
+specsmith/
 ├── .claude-plugin/
 │   ├── plugin.json                 # Plugin metadata (v0.2.0)
 │   └── marketplace.json            # Marketplace registration

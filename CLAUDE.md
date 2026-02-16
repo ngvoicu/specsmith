@@ -1,8 +1,8 @@
-# CLAUDE.md — SpecSmith Forge
+# CLAUDE.md — Spec Smith
 
 ## Project Overview
 
-SpecSmith Forge is a Claude Code plugin that replaces ephemeral AI coding plans with persistent, resumable specs. It has two layers:
+Spec Smith is a Claude Code plugin that replaces ephemeral AI coding plans with persistent, resumable specs. It has two layers:
 
 1. **Plugin layer** — Markdown-based Claude Code plugin (commands, agents, hooks, skill)
 2. **Skill layer** — Universal SKILL.md that works with any AI coding tool via `npx skills add`
@@ -10,7 +10,7 @@ SpecSmith Forge is a Claude Code plugin that replaces ephemeral AI coding plans 
 ## Repository Structure
 
 ```
-specsmith-forge/
+specsmith/
 ├── .claude-plugin/          # Plugin metadata
 │   ├── plugin.json          # Name: specsmith, version 0.2.0
 │   └── marketplace.json     # Marketplace registration
