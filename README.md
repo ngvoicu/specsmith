@@ -152,7 +152,7 @@ npx skills add ngvoicu/specsmith -a codex
 # Cursor
 npx skills add ngvoicu/specsmith -a cursor
 
-# Windsurf (see Windsurf Note below — extra step required)
+# Windsurf
 npx skills add ngvoicu/specsmith -a windsurf
 
 # Cline
@@ -165,29 +165,6 @@ npx skills add ngvoicu/specsmith -a gemini
 For Claude Code, this installs SKILL.md with auto-triggers ("resume", "what was I working on", "create a spec for X"). You **don't** get slash commands or the researcher agent — use Path 1 for the full plugin.
 
 For other tools, this installs the SKILL.md which teaches the tool the full spec workflow — resuming, pausing, creating specs, updating progress, and cross-session continuity.
-
-#### Windsurf Note
-
-`npx skills add -a windsurf` creates a symlink at `.windsurf/skills/specsmith` that Windsurf Cascade doesn't follow. After installing, replace it with real files and also copy to the Codeium path:
-
-**macOS / Linux:**
-```bash
-rm .windsurf/skills/specsmith                                        # remove symlink
-rm .codeium/windsurf/skills/specsmith                                # remove symlink
-
-cp -r .agents/skills/specsmith .windsurf/skills/specsmith            # real copy
-cp -r .agents/skills/specsmith .codeium/windsurf/skills/specsmith    # real copy
-```
-
-**Windows (PowerShell):**
-```powershell
-Remove-Item .windsurf\skills\specsmith                                           # remove symlink
-Remove-Item .codeium\windsurf\skills\specsmith                                   # remove symlink
-Copy-Item -Recurse .agents\skills\specsmith .windsurf\skills\specsmith           # real copy
-Copy-Item -Recurse .agents\skills\specsmith .codeium\windsurf\skills\specsmith.  # real copy
-```
-
-Cascade will auto-activate the skill when your request matches the description, or you can invoke it manually with `@specsmith`.
 
 ### Comparison: Plugin vs npx
 
